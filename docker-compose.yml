@@ -19,6 +19,9 @@ services:
       - FIX_PERMISSIONS=true
     volumes:
       - grav_data:/var/www/html
+      # Seed akun admin Grav (hash bcrypt). Tersedia sejak first run,
+      # sehingga tidak perlu setup form di awal.
+      - ./grav/accounts/admin.yaml:/var/www/html/user/accounts/admin.yaml
 
   # ---------- OPAC (SLiMS 9) ----------
   slims:
