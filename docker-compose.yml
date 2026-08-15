@@ -1,0 +1,60 @@
+# ============================================================
+# Stack Website Perpustakaan Sekolah — untuk Easypanel
+# Grav (front-end) + SLiMS 9 (OPAC) + MySQL
+#
+# Deployment di Easypanel (Compose Service):
+#   - Domain 1 (root)  -> service grav  :80   (website)
+#   - Domain 2 (subdomain) -> service slims :80 (OPAC)
+#   - Tidak pakai ports (routing via domain Easypanel)
+# ============================================================
+
+services:
+  # ---------- Front-end website (Grav CMS) ----------
+  grav:
+    image: getgrav/grav:1.7
+    restart: unless-stopped
+    environment:
+      - GRAV_SETUP=true
+      - GRAV_SCHEDULER=true
+      - FIX_PERMISSIONS=true
+    volumes:
+      - grav_data:/var/www/html
+
+  # ---------- OPAC (SLiMS 9) ----------
+  slims:
+    build:
+      context: ./slims
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      - ENV=production
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=slims
+      - DB_PASS=${DB_PASS:?set DB_PASS in .env}
+      - DB_NAME=slims
+    volumes:
+      - slims_data:/var/www/html
+    depends_on:
+      - db
+
+  # ---------- Database SLiMS ----------
+  db:
+    image: mysql:5.7
+    restart: unless-stopped
+    command: --sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION --max_allowed_packet=1024M
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASS:?set DB_PASS in .env}
+      - MYSQL_DATABASE=slims
+      - MYSQL_USER=slims
+      - MYSQL_PASSWORD=${DB_PASS:?set DB_PASS in .env}
+    volumes:
+      - db_data:/var/lib/mysql
+      # Preload skema & data awal SLiMS (hanya saat volume db kosong / first run)
+      - ./slims/sql/senayan.sql:/docker-entrypoint-initdb.d/01-senayan.sql:ro
+      - ./slims/sql/sampledata.sql:/docker-entrypoint-initdb.d/02-sampledata.sql:ro
+
+volumes:
+  grav_data:
+  slims_data:
+  db_data:

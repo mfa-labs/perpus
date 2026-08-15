@@ -1,0 +1,14 @@
+# Environment
+.env
+
+# Folder internal tools
+.commandcode/
+
+# Docker volumes/data lokal
+dbdata/
+app/
+site/
+
+# Sistem
+.DS_Store
+Thumbs.db
