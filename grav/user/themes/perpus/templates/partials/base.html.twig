@@ -16,6 +16,8 @@
     {% endblock %}
 </head>
 <body class="{% block body_classes %}{{ page.header.body_classes }}{% endblock %}">
+    <a class="skip-link" href="#konten">Langsung ke konten</a>
+
     {% block header %}
     <header class="site-header">
         <div class="container header-inner">
@@ -26,13 +28,15 @@
             <nav class="site-nav" aria-label="Navigasi utama">
                 {% include 'partials/navigation.html.twig' %}
             </nav>
-            <button class="nav-toggle" aria-label="Buka menu" aria-expanded="false">☰</button>
+            <button class="nav-toggle" aria-label="Buka menu" aria-expanded="false" aria-controls="menu-utama">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </header>
     {% endblock %}
 
     {% block body %}
-    <main class="site-main">
+    <main class="site-main" id="konten">
         <div class="container">
             {% block content %}{% endblock %}
         </div>
@@ -42,7 +46,30 @@
     {% block footer %}
     <footer class="site-footer">
         <div class="container">
-            <p>&copy; {{ 'now'|date('Y') }} {{ site.title }}. Ditenagai oleh <a href="https://getgrav.org" target="_blank" rel="noopener">Grav</a> &amp; <a href="https://slims.web.id" target="_blank" rel="noopener">SLiMS</a>.</p>
+            <div class="footer-grid">
+                <div>
+                    <h2>{{ site.title }}</h2>
+                    <p>Pusat sumber belajar yang mendukung program literasi sekolah.</p>
+                </div>
+                <div>
+                    <h2>Menu</h2>
+                    <ul>
+                        {% for page in pages.children.visible %}
+                        <li><a href="{{ page.url }}">{{ page.menu }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div>
+                    <h2>Kontak</h2>
+                    <ul>
+                        <li><a href="{{ base_url }}/kontak">Halaman kontak</a></li>
+                        <li><a href="{{ base_url }}/katalog">Katalog online</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; {{ 'now'|date('Y') }} {{ site.title }}. Ditenagai oleh <a href="https://getgrav.org" target="_blank" rel="noopener">Grav</a> &amp; <a href="https://slims.web.id" target="_blank" rel="noopener">SLiMS</a>.</p>
+            </div>
         </div>
     </footer>
     {% endblock %}
@@ -57,6 +84,7 @@
                 toggle.addEventListener('click', function () {
                     var open = nav.classList.toggle('open');
                     toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                    toggle.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
                 });
             }
         })();

@@ -1,5 +1,6 @@
 ---
 title: Katalog Online
+menu: Katalog
 metadata:
   description: 'Katalog online (OPAC) perpustakaan sekolah'
 ---

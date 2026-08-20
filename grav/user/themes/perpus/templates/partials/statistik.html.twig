@@ -1,16 +1,16 @@
 {% set stats = statistik ?? (grav.theme.getStats() ?? null) %}
 {% if stats %}
-<div class="stats">
-    <div class="stat-card"><span class="stat-number">{{ stats.koleksi }}</span><span class="stat-label">Judul Koleksi</span></div>
-    <div class="stat-card"><span class="stat-number">{{ stats.anggota }}</span><span class="stat-label">Anggota</span></div>
-    <div class="stat-card"><span class="stat-number">{{ stats.peminjaman }}</span><span class="stat-label">Peminjaman</span></div>
-    <div class="stat-card"><span class="stat-number">{{ stats.kunjungan }}</span><span class="stat-label">Kunjungan</span></div>
+<div class="stats" role="group" aria-label="Statistik perpustakaan">
+    <div class="stat-item"><span class="stat-number">{{ stats.koleksi }}</span><span class="stat-label">Judul Koleksi</span></div>
+    <div class="stat-item"><span class="stat-number">{{ stats.anggota }}</span><span class="stat-label">Anggota</span></div>
+    <div class="stat-item"><span class="stat-number">{{ stats.peminjaman }}</span><span class="stat-label">Peminjaman</span></div>
+    <div class="stat-item"><span class="stat-number">{{ stats.kunjungan }}</span><span class="stat-label">Kunjungan</span></div>
 </div>
 {% else %}
-<div class="stats">
-    <div class="stat-card"><span class="stat-number">–</span><span class="stat-label">Judul Koleksi</span></div>
-    <div class="stat-card"><span class="stat-number">–</span><span class="stat-label">Anggota</span></div>
-    <div class="stat-card"><span class="stat-number">–</span><span class="stat-label">Peminjaman</span></div>
-    <div class="stat-card"><span class="stat-number">–</span><span class="stat-label">Kunjungan</span></div>
+<div class="stats" role="group" aria-label="Statistik perpustakaan">
+    <div class="stat-item"><span class="stat-number">–</span><span class="stat-label">Judul Koleksi</span></div>
+    <div class="stat-item"><span class="stat-number">–</span><span class="stat-label">Anggota</span></div>
+    <div class="stat-item"><span class="stat-number">–</span><span class="stat-label">Peminjaman</span></div>
+    <div class="stat-item"><span class="stat-number">–</span><span class="stat-label">Kunjungan</span></div>
 </div>
 {% endif %}

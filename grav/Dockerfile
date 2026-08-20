@@ -35,7 +35,9 @@ RUN curl -fsSL -o /tmp/grav-admin.zip "https://github.com/getgrav/grav/releases/
 # user/ produk (config, pages, theme, plugin statistik, accounts)
 COPY grav/user /var/www/html/user
 # Hapus akun contoh bawaan grav-admin (admin.yaml kita jadi satu-satunya)
+# dan halaman contoh bawaan (home, typography) agar tidak muncul di menu
 RUN rm -f /var/www/html/user/accounts/admin.yaml.bak \
+    && rm -rf /var/www/html/user/pages/01.home /var/www/html/user/pages/02.typography \
     && chown -R www-data:www-data /var/www/html/user
 
 # PHP config ringan untuk Grav
