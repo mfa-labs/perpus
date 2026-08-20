@@ -7,7 +7,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  # Image produk dipush ke GHCR org mfa-labs
   IMAGE_BASE: ghcr.io/mfa-labs/perpustakaan-sekolah
 
 jobs:
@@ -17,6 +16,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write
 
     steps:
       - name: Checkout
@@ -29,19 +29,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Metadata: tag semver (v1.0.0, 1.0, latest) untuk kedua image
-      - name: Metadata image
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            ${{ env.IMAGE_BASE }}-grav
-            ${{ env.IMAGE_BASE }}-slims
-          tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=raw,value=latest,enable={{is_default_branch}}
-
       # ---------- Image Grav (front-end) ----------
       - name: Build & push image Grav
         uses: docker/build-push-action@v6
@@ -49,8 +36,10 @@ jobs:
           context: .
           file: grav/Dockerfile
           push: true
-          tags: ${{ env.IMAGE_BASE }}-grav:${{ github.ref_name }}
-          labels: ${{ steps.meta.outputs.labels }}
+          provenance: false
+          tags: |
+            ${{ env.IMAGE_BASE }}-grav:${{ github.ref_name }}
+            ${{ env.IMAGE_BASE }}-grav:latest
 
       # ---------- Image SLiMS (OPAC) ----------
       - name: Build & push image SLiMS
@@ -59,5 +48,7 @@ jobs:
           context: ./slims
           file: slims/Dockerfile
           push: true
-          tags: ${{ env.IMAGE_BASE }}-slims:${{ github.ref_name }}
-          labels: ${{ steps.meta.outputs.labels }}
+          provenance: false
+          tags: |
+            ${{ env.IMAGE_BASE }}-slims:${{ github.ref_name }}
+            ${{ env.IMAGE_BASE }}-slims:latest
