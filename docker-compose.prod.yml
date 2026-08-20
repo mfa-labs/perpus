@@ -14,6 +14,8 @@ services:
   grav:
     image: ${IMAGE_GRAV:-ghcr.io/mfa-labs/perpustakaan-sekolah-grav:v1.0.1}
     restart: unless-stopped
+    expose:
+      - "80"
     environment:
       - GRAV_SETUP=true
       - GRAV_SCHEDULER=true
@@ -33,6 +35,8 @@ services:
   slims:
     image: ${IMAGE_SLIMS:-ghcr.io/mfa-labs/perpustakaan-sekolah-slims:v1.0.1}
     restart: unless-stopped
+    expose:
+      - "80"
     environment:
       - ENV=production
       - DB_HOST=db
