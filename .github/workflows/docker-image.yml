@@ -7,12 +7,30 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
-
+    name: Build Image Produk
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Build image Grav (front-end website)
+      - name: Build image Grav
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: grav/Dockerfile
+          push: false
+          tags: perpus-grav:ci
+
+      # Build image SLiMS (OPAC)
+      - name: Build image SLiMS
+        uses: docker/build-push-action@v6
+        with:
+          context: ./slims
+          file: slims/Dockerfile
+          push: false
+          tags: perpus-slims:ci
