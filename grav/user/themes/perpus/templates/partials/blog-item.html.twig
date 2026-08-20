@@ -1,0 +1,9 @@
+<article class="blog-card">
+    <h2><a href="{{ item.url }}">{{ item.title }}</a></h2>
+    <p class="post-meta">
+        <time datetime="{{ item.date|date('c') }}">{{ item.date|date('d F Y') }}</time>
+        {% if item.taxonomy.category %}• {{ item.taxonomy.category|join(', ') }}{% endif %}
+    </p>
+    <div class="blog-summary">{{ item.summary(300)|raw }}</div>
+    <a class="read-more" href="{{ item.url }}">Baca selengkapnya →</a>
+</article>

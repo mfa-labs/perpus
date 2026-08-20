@@ -1,0 +1,81 @@
+name: Perpustakaan Digital Sekolah
+description: >-
+  Website perpustakaan digital sekolah berbasis Grav CMS + SLiMS 9.
+  Mencakup website profil & berita (Grav), katalog online/OPAC (SLiMS),
+  statistik perpustakaan, dan panel admin untuk operator. Database MySQL
+  dan data contoh di-seed otomatis saat instalasi. Siap dipakai sekolah.
+instructions: |-
+  Setelah deploy selesai:
+
+  1. **Website** terbuka di domain utama, **OPAC** di subdomain (mis. `opac.domain.sch.id`).
+  2. **Admin SLiMS**: buka `https://<subdomain>/admin/` — kredensial awal tampil di log container `slims` (cari "ADMIN CREDENTIALS"). Username `admin`.
+  3. **Admin Grav**: buka `https://<domain>/admin` — gunakan password yang Anda isi saat setup (jika kosong, cari "GRAV FIRST-TIME SETUP" di log container `grav`).
+  4. Segera ganti password admin setelah login pertama.
+
+  > Butuh bantuan? Lihat panduan di folder `docs/` repositori.
+changeLog:
+  - date: 2026-08-17
+    description: Rilis perdana produk Perpustakaan Digital Sekolah (Grav 1.7.53.2 + SLiMS 9.8.0)
+links:
+  - label: Website
+    url: https://getgrav.org
+  - label: Documentation
+    url: https://learn.getgrav.org
+  - label: Github
+    url: https://github.com/getgrav/grav
+  - label: SLiMS
+    url: https://slims.web.id
+contributors:
+  - name: Perpustakaan Digital Sekolah
+    url: https://github.com/your-org/perpustakaan-sekolah
+schema:
+  type: object
+  required:
+    - projectName
+    - repoUrl
+    - rootDomain
+    - opacSubdomain
+  properties:
+    projectName:
+      type: string
+      title: Nama Project
+      default: perpustakaan-sekolah
+    repoUrl:
+      type: string
+      title: Repository URL (Grav + SLiMS)
+      default: https://github.com/your-org/perpustakaan-sekolah
+    repoRef:
+      type: string
+      title: Branch / Ref
+      default: main
+    rootDomain:
+      type: string
+      title: Domain Website
+      default: perpus.sch.id
+    opacSubdomain:
+      type: string
+      title: Subdomain OPAC
+      default: opac
+    gravAdminPassword:
+      type: string
+      title: Password Admin Grav (opsional)
+      description: Kosongkan untuk password acak (dikirim ke log container).
+benefits:
+  - title: Satu Klik Instalasi
+    description: Website, OPAC, dan database terpasang otomatis lengkap dengan data contoh.
+  - title: Panel Admin Mudah
+    description: Kelola berita, profil, dan konten lewat panel Grav; koleksi buku lewat SLiMS.
+  - title: Tanpa Setup Manual
+    description: Skema database dan akun admin dibuat otomatis saat first run.
+features:
+  - Website profil, berita, dan layanan perpustakaan
+  - Katalog online (OPAC) dengan pencarian dan status ketersediaan
+  - Statistik perpustakaan (koleksi, anggota, peminjaman, kunjungan)
+  - Form kontak dan peta lokasi
+  - SEO: sitemap, meta tag, RSS feed
+  - Responsif untuk desktop dan mobile
+tags:
+  - CMS
+  - Education
+  - Library
+  - PHP

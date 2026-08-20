@@ -1,0 +1,2 @@
+# Backup plugin — cadangan terjadwal ke folder user/backup
+enabled: true

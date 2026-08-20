@@ -1,0 +1,13 @@
+{% if pagination|length > 1 %}
+<nav class="pagination" aria-label="Navigasi halaman">
+    <ul>
+        {% for page_num in pagination %}
+        <li>
+            <a href="{{ pagination_url(page_num) }}" class="{% if page_num == pagination.current %}active{% endif %}">
+                {{ page_num }}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</nav>
+{% endif %}

@@ -1,0 +1,60 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+env:
+  REGISTRY: ghcr.io
+  # Ganti dengan organisasi/akun GitHub Anda
+  IMAGE_BASE: ghcr.io/${{ github.repository_owner }}/perpustakaan-sekolah
+
+jobs:
+  build-and-push:
+    name: Build & Push Image Produk
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login ke GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Metadata image
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_BASE }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      # ---------- Image Grav (front-end) ----------
+      - name: Build & push image Grav
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: grav/Dockerfile
+          push: true
+          tags: ${{ env.IMAGE_BASE }}-grav:${{ github.ref_name }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      # ---------- Image SLiMS (OPAC) ----------
+      - name: Build & push image SLiMS
+        uses: docker/build-push-action@v6
+        with:
+          context: ./slims
+          file: slims/Dockerfile
+          push: true
+          tags: ${{ env.IMAGE_BASE }}-slims:${{ github.ref_name }}
+          labels: ${{ steps.meta.outputs.labels }}

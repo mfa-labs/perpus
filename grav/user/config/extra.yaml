@@ -1,0 +1,4 @@
+# Konfigurasi tambahan produk — dibaca dari environment
+extra:
+  # URL OPAC SLiMS (diisi otomatis: subdomain di produksi, localhost di dev)
+  opac_url: 'OPAC_URL_PLACEHOLDER'

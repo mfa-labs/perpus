@@ -1,0 +1,24 @@
+{% extends 'partials/base.html.twig' %}
+
+{% block content %}
+    <article class="page blog-item">
+        <header class="page-header">
+            <h1>{{ page.title }}</h1>
+            <p class="post-meta">
+                <time datetime="{{ page.date|date('c') }}">{{ page.date|date('d F Y') }}</time>
+                {% if page.taxonomy.category %}
+                • Kategori:
+                {% for cat in page.taxonomy.category %}
+                    <a href="{{ blog_url }}/category{{ config.system.param_sep }}{{ cat }}">{{ cat }}</a>{% if not loop.last %}, {% endif %}
+                {% endfor %}
+                {% endif %}
+            </p>
+        </header>
+        <div class="page-body">
+            {{ page.content|raw }}
+        </div>
+        {% if config.plugins.pagination.enabled and collection.params.pagination %}
+            {% include 'partials/pagination.html.twig' with { pagination: collection.params.pagination } %}
+        {% endif %}
+    </article>
+{% endblock %}

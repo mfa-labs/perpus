@@ -1,0 +1,46 @@
+title: Form Kontak
+form:
+  name: kontak
+  fields:
+    nama:
+      label: Nama
+      placeholder: 'Nama lengkap'
+      autocomplete: 'on'
+      type: text
+      validate:
+        required: true
+    email:
+      label: Email
+      placeholder: 'Alamat email'
+      type: email
+      validate:
+        required: true
+    subjek:
+      label: Subjek
+      placeholder: 'Perihal pesan'
+      type: text
+      validate:
+        required: true
+    pesan:
+      label: Pesan
+      placeholder: 'Tulis pesan Anda…'
+      type: textarea
+      validate:
+        required: true
+  buttons:
+    submit:
+      type: submit
+      value: Kirim Pesan
+    reset:
+      type: reset
+      value: Reset
+  process:
+    - email:
+        subject: '[Kontak Website] {{ form.value.subjek|e }}'
+        body: 'Nama: {{ form.value.nama|e }}\nEmail: {{ form.value.email|e }}\n\n{{ form.value.pesan|e }}'
+    - save:
+        fileprefix: kontak-
+        dateformat: Ymd-His
+        extension: txt
+        body: 'Nama: {{ form.value.nama|e }}\nEmail: {{ form.value.email|e }}\nSubjek: {{ form.value.subjek|e }}\nPesan: {{ form.value.pesan|e }}'
+    - message: 'Terima kasih! Pesan Anda telah terkirim.'

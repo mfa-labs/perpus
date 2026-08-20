@@ -1,0 +1,9 @@
+<nav class="menu" aria-label="Navigasi">
+    <ul>
+        {% for page in pages.children.visible %}
+        <li class="{% if page.active or page.activeChild %}active{% endif %}">
+            <a href="{{ page.url }}">{{ page.menu }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+</nav>

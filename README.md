@@ -1,48 +1,87 @@
-# Website Perpustakaan Sekolah — Docker Stack (Easypanel & Lokal)
+# Perpustakaan Digital Sekolah — Produk (Grav + SLiMS)
 
-Stack untuk website perpustakaan sekolah berbasis **Grav CMS** (front-end) + **SLiMS 9 Bulian** (OPAC) + **MySQL 5.7**, di-deploy sebagai **Compose Service** di Easypanel — dan bisa juga dijalankan di **PC lokal** untuk pengembangan.
+**Website perpustakaan digital sekolah siap pakai** — front-end website (Grav CMS) + katalog online/OPAC (SLiMS 9) + database MySQL, dirancang untuk sekolah. Sekali deploy, langsung bisa dipakai: website, OPAC, panel admin, dan data contoh sudah ter-setup otomatis.
+
+| Komponen | Teknologi |
+|---|---|
+| Website (profil, berita, statistik, kontak) | Grav CMS 1.7.53.2 (PHP 8.3) |
+| Katalog online / OPAC | SLiMS 9 Bulian 9.8.0 |
+| Database | MySQL 5.7 |
+| Distribusi | Docker Compose + template Easypanel |
+
+## Fitur
+
+- **Website profil perpustakaan** — beranda, profil, layanan, tata tertib, jam operasional, kontak
+- **Berita & kegiatan** — artikel, kategori, program literasi, pagination, RSS feed
+- **Katalog online (OPAC)** — pencarian, filter kategori, detail koleksi, lokasi rak, status buku
+- **Statistik perpustakaan** — koleksi, anggota, peminjaman, kunjungan (dibaca langsung dari DB SLiMS)
+- **Panel admin** — Grav (konten website) & SLiMS (koleksi, anggota, sirkulasi)
+- **SEO** — sitemap, meta tag, URL ramah
+- **Keamanan** — password admin di-random saat first run, kredensial tidak hardcoded
+- **Responsif** — tampil baik di desktop & mobile
 
 ## Arsitektur
 
 ```
-perpus.sch.id   → grav  (website: profil, berita, statistik)
-opac.sch.id     → slims (OPAC SLiMS)
-                     └── db (mysql:5.7)
+perpus.sch.id      → grav  (website: profil, berita, statistik)
+opac.sch.id        → slims (OPAC SLiMS)
+                        └── db (mysql:5.7)
 ```
 
 - Satu Compose Service berisi 3 container: `grav`, `slims`, `db`.
 - Di panel Easypanel, tambahkan **2 domain** untuk service yang sama:
   - Domain root → internal service `grav`, port `80`
   - Subdomain (mis. `opac`) → internal service `slims`, port `80`
-- Tidak ada `ports` di compose — routing & SSL dikelola Easypanel (Traefik).
+- Database SLiMS di-seed otomatis oleh entrypoint `slims` (self-seed) saat first run — tidak perlu import manual.
 
-## Struktur File
+## Struktur Repo
 
 ```
 .
-├── docker-compose.yml      # grav + slims + mysql (tanpa ports)
-├── .env.example            # salin menjadi .env
-└── slims/
-    ├── Dockerfile          # SLiMS 9.8.0 di root /var/www/html
-    ├── entrypoint.sh       # tulis config + tunggu DB + random password admin
-    └── sql/
-        ├── senayan.sql     # skema database (preload MySQL first run)
-        └── sampledata.sql  # 15 judul buku contoh
+├── docker-compose.yml          # grav + slims + mysql (tanpa ports)
+├── docker-compose.override.yml # port lokal (8080/8082/13306)
+├── .env.example                # salin menjadi .env (DB_PASS)
+├── grav/
+│   ├── Dockerfile              # image Grav + konten produk
+│   ├── docker-entrypoint.d/    # init: rotasi admin, opac_url
+│   ├── php-grav.ini
+│   └── user/                   # KONTEN PRODUK (config, pages, theme, plugin statistik)
+│       ├── config/             # system, site, plugins, extra
+│       ├── pages/              # beranda, profil, layanan, berita, katalog, kontak…
+│       ├── themes/perpus/      # tema kustom responsif
+│       ├── plugins/statistik/  # widget statistik F05
+│       └── accounts/           # seed admin (password di-random saat first run)
+├── slims/
+│   ├── Dockerfile              # image SLiMS 9.8.0
+│   ├── entrypoint.sh           # config DB + seed + random admin
+│   └── sql/                    # senayan.sql (skema), sampledata.sql (15 judul)
+├── easypanel/                  # template Easypanel (index.ts + meta.yaml)
+└── .github/workflows/release.yml # build & push image ke GHCR
 ```
 
-## Instalasi di PC Lokal
+## Cara Pakai
 
-Cocok untuk pengembangan / demo sebelum deploy. Butuh **Docker Desktop** (Windows/Mac) atau **Docker Engine** (Linux).
+### Opsi A — Easypanel (disarankan untuk sekolah)
+
+1. Push repo ini ke GitHub.
+2. Di Easypanel: **New Service → Compose → Git source**, isi repository URL & branch `main`.
+3. Tambahkan environment `DB_PASS=<password kuat>` (dari `.env.example`).
+4. **Deploy**.
+5. Tambahkan **2 domain**:
+   - `perpus.sch.id` → `grav` : `80`
+   - `opac.sch.id` → `slims` : `80`
+6. SSL otomatis oleh Easypanel (Let's Encrypt).
+
+Template one-click juga tersedia di `easypanel/` (lihat `easypanel/meta.yaml`).
+
+### Opsi B — PC Lokal (pengembangan/demo)
 
 ```bash
 cp .env.example .env
 nano .env   # isi DB_PASS
 
-# Build + start (override lokal otomatis terbaca: port 8080/8081)
 docker compose up -d --build
 ```
-
-Akses dari browser:
 
 | Layanan | URL |
 |---|---|
@@ -51,76 +90,43 @@ Akses dari browser:
 | OPAC SLiMS | `http://localhost:8082` |
 | Admin SLiMS | `http://localhost:8082/admin` |
 
-Password admin SLiMS pertama ada di log: `docker compose logs slims | grep -A3 "ADMIN CREDENTIALS"`.
+## Kredensial Awal
 
-> `docker-compose.override.yml` hanya dipakai lokal; saat deploy ke Easypanel hanya `docker-compose.yml` yang dibaca (override tidak ikut).
+Semua password admin di-random saat first run dan **hanya muncul sekali di log**:
 
-## Deploy di Easypanel
+```bash
+# SLiMS (username: admin)
+docker compose logs slims | grep -A3 "ADMIN CREDENTIALS"
 
-1. **Push repo** ke Git (GitHub/GitLab) — butuh `docker-compose.yml`, `slims/`, `.env.example`.
-2. Di Easypanel: buat project → **New Service → Compose** → pilih **Git source**:
-   - Repository URL: repo Anda
-   - Build Path: `/`
-   - Docker Compose File: `docker-compose.yml`
-3. Tambahkan **environment** (dari `.env.example`): `DB_PASS=<password kuat>`.
-4. **Deploy**.
-5. Tambahkan **2 domain** ke service yang sama:
-   - `perpus.sch.id` → `grav` : `80`
-   - `opac.sch.id` → `slims` : `80`
-6. SSL otomatis oleh Easypanel (Let's Encrypt).
+# Grav (username: admin) — jika GRAV_ADMIN_PASSWORD tidak diisi
+docker compose logs grav | grep -A3 "GRAV FIRST-TIME SETUP"
+```
 
-> Compose Service Easypanel: satu domain hanya bisa menunjuk satu internal service — makanya dipakai subdomain, bukan path `/slims`.
+Segera ganti password setelah login pertama.
 
-## Setup Awal SLiMS
-
-1. Setelah deploy, database otomatis dibuat & di-seed (skema + 15 buku contoh) oleh container `db` saat first run.
-2. Ambil **password admin pertama** dari log:
-   ```bash
-   # di panel Easypanel: buka Logs service slims, cari "ADMIN CREDENTIALS"
-   # atau via CLI server:
-   docker logs <slims-container> | grep -A3 "ADMIN CREDENTIALS"
-   ```
-   - Username: `admin`
-   - Password: acak, hanya muncul sekali di log pertama
-3. Login di `https://opac.sch.id/admin/` lalu segera ganti password.
-
-> Menambah koleksi? Masuk modul **Bibliography** di admin SLiMS.
-
-## Setup Awal Grav
-
-1. Buka `https://perpus.sch.id/` — Grav auto-install.
-2. Login admin Grav di `https://perpus.sch.id/admin`.
+> Di Easypanel, set env `GRAV_ADMIN_PASSWORD` pada service `grav` untuk menentukan password Grav sendiri.
 
 ## Operasi Sehari-hari
 
 ```bash
-# Lihat status
-docker compose ps
-
-# Lihat log
-docker compose logs -f slims
+docker compose ps          # status
 docker compose logs -f grav
-
-# Restart
+docker compose logs -f slims
 docker compose restart
-
-# Stop
-docker compose down
+docker compose down        # stop (data volume aman)
 ```
 
 ## Backup
-
-Backup data penting (dijalankan saat stack berjalan):
 
 ```bash
 # 1. Database SLiMS
 docker compose exec db sh -c 'exec mysqldump -u root -p"$MYSQL_ROOT_PASSWORD" slims' > backup-slims-$(date +%F).sql
 
 # 2. File upload & data SLiMS
-docker run --rm -v perpus_slims_data:/data -v "$PWD":/backup alpine tar czf /backup/slims-files-$(date +%F).tar.gz -C /data .
+docker run --rm -v <project>_slims_data:/data -v "$PWD":/backup alpine tar czf /backup/slims-files-$(date +%F).tar.gz -C /data .
 
 # 3. Konten Grav
-docker run --rm -v perpus_grav_data:/data -v "$PWD":/backup alpine tar czf /backup/grav-$(date +%F).tar.gz -C /data .
+docker run --rm -v <project>_grav_data:/data -v "$PWD":/backup alpine tar czf /backup/grav-$(date +%F).tar.gz -C /data .
 ```
 
 > Nama volume menyesuaikan nama project Easypanel (biasanya `<project>_<volume>`).
@@ -128,19 +134,25 @@ docker run --rm -v perpus_grav_data:/data -v "$PWD":/backup alpine tar czf /back
 ## Restore
 
 ```bash
-# Database
 docker compose exec -T db mysql -u root -p"$MYSQL_ROOT_PASSWORD" slims < backup-slims-2026-08-15.sql
-
-# File SLiMS
-docker run --rm -v perpus_slims_data:/data -v "$PWD":/backup alpine sh -c 'cd /data && tar xzf /backup/slims-files-*.tar.gz'
-
-# Konten Grav
-docker run --rm -v perpus_grav_data:/data -v "$PWD":/backup alpine sh -c 'cd /data && tar xzf /backup/grav-*.tar.gz'
+docker run --rm -v <project>_slims_data:/data -v "$PWD":/backup alpine sh -c 'cd /data && tar xzf /backup/slims-files-*.tar.gz'
+docker run --rm -v <project>_grav_data:/data -v "$PWD":/backup alpine sh -c 'cd /data && tar xzf /backup/grav-*.tar.gz'
 ```
+
+## Pengembangan & Release
+
+- **Build lokal**: `docker compose build` (atau `docker compose up -d --build`).
+- **Release image**: buat tag `git tag v1.0.0 && git push origin v1.0.0` → GitHub Actions build & push `ghcr.io/<org>/perpustakaan-sekolah-grav` dan `-slims` ke GHCR.
+
+## Dokumen Terkait
+
+- `PRD.md` — kebutuhan produk
+- `Perbandingan-CMS.md` — analisis pemilihan CMS
+- `docs/` — panduan penggunaan untuk admin sekolah
 
 ## Catatan Penting
 
-- **SLiMS butuh MySQL 5.7/MariaDB 10.3+**, jangan ganti image `db` ke MySQL 8.
+- **SLiMS butuh MySQL 5.7/MariaDB 10.3+** — jangan ganti image `db` ke MySQL 8.
 - **Volume `slims_data`** berisi seluruh instalasi + config; backup rutin `files/`, `images/`, `repository/`, dan `config/`.
 - **Admin SLiMS** di `/admin/`; keamanan tidak bergantung pada path.
 - Jangan tambahkan `ports:` di compose — Easypanel memperingatkan konflik port dan routing sebaiknya via domain.

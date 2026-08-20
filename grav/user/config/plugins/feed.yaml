@@ -1,0 +1,5 @@
+# Plugin Feed — RSS berita
+enabled: true
+limit: 10
+description:
+  length: 500

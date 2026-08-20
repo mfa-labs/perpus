@@ -1,0 +1,15 @@
+---
+name: Statistik
+version: 1.0.0
+description: 'Menampilkan statistik perpustakaan dari database SLiMS (koleksi, anggota, peminjaman, kunjungan).'
+icon: bar-chart
+author:
+  name: 'Perpustakaan Digital Sekolah'
+  email: admin@example.com
+homepage: null
+keywords: statistik, perpustakaan, slims
+bugs: null
+license: MIT
+dependencies:
+  gantry: false
+  admin: false

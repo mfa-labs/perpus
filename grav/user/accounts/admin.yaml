@@ -1,0 +1,12 @@
+state: enabled
+email: admin@example.com
+language: id
+access:
+  admin:
+    login: true
+    super: true
+  site:
+    login: true
+fullname: 'Administrator Perpustakaan'
+title: Administrator
+hashed_password: $2y$10$idhvzgc6Ej61JDBBEL1h.OGJUlOpUx0xFbo8CP5.nMiA7xX.5RmtO

@@ -1,0 +1,11 @@
+---
+title: Perpus
+version: 1.0.0
+description: 'Tema resmi Perpustakaan Digital Sekolah — responsif, ringan, tanpa framework.'
+icon: book
+author:
+  name: 'Perpustakaan Digital Sekolah'
+  email: admin@example.com
+home: /beranda
+keywords: perpustakaan, sekolah, literasi
+license: MIT

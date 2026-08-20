@@ -1,0 +1,66 @@
+{% set theme_config = attribute(config.themes, 'perpus') %}
+<!DOCTYPE html>
+<html lang="{{ grav.language.getLanguage ?: 'id' }}">
+<head>
+    {% block head %}
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content="Grav" />
+    <title>{% if header.title %}{{ header.title|e('html') }} | {% endif %}{{ site.title|e('html') }}</title>
+    {% include 'partials/metadata.html.twig' %}
+    {% include 'partials/favicon.html.twig' %}
+    {% do assets.addCss('theme://css/perpus.css', 100) %}
+    {% endblock %}
+    {% block assets %}
+    {{ assets.css()|raw }}
+    {% endblock %}
+</head>
+<body class="{% block body_classes %}{{ page.header.body_classes }}{% endblock %}">
+    {% block header %}
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="brand" href="{{ home_url }}">
+                <span class="brand-title">{{ site.title }}</span>
+                <span class="brand-sub">Perpustakaan Sekolah</span>
+            </a>
+            <nav class="site-nav" aria-label="Navigasi utama">
+                {% include 'partials/navigation.html.twig' %}
+            </nav>
+            <button class="nav-toggle" aria-label="Buka menu" aria-expanded="false">☰</button>
+        </div>
+    </header>
+    {% endblock %}
+
+    {% block body %}
+    <main class="site-main">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+    {% endblock %}
+
+    {% block footer %}
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; {{ 'now'|date('Y') }} {{ site.title }}. Ditenagai oleh <a href="https://getgrav.org" target="_blank" rel="noopener">Grav</a> &amp; <a href="https://slims.web.id" target="_blank" rel="noopener">SLiMS</a>.</p>
+        </div>
+    </footer>
+    {% endblock %}
+
+    {% block scripts %}
+    {{ assets.js()|raw }}
+    <script>
+        (function () {
+            var toggle = document.querySelector('.nav-toggle');
+            var nav = document.querySelector('.site-nav');
+            if (toggle && nav) {
+                toggle.addEventListener('click', function () {
+                    var open = nav.classList.toggle('open');
+                    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                });
+            }
+        })();
+    </script>
+    {% endblock %}
+</body>
+</html>

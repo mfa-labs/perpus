@@ -1,0 +1,20 @@
+---
+title: Perpus
+slug: perpus
+version: 1.0.0
+description: 'Tema resmi Perpustakaan Digital Sekolah — responsif, ringan, tanpa framework.'
+author:
+  name: 'Perpustakaan Digital Sekolah'
+  email: admin@example.com
+home: /beranda
+demo: null
+keywords: perpustakaan, sekolah, literasi
+bugs: null
+license: MIT
+nested: true
+streams:
+  schemes:
+    theme:
+      type: ReadOnlyStream
+      paths:
+        - 'user://themes/perpus'

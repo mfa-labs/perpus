@@ -1,0 +1,24 @@
+# ============================================================
+# Konfigurasi Situs — Produk Perpustakaan Digital Sekolah
+# (Nilai bawaan produk; admin bisa ubah lewat panel Grav)
+# ============================================================
+
+title: 'Perpustakaan Digital Sekolah'
+default_lang: id
+author:
+  name: 'Administrator Perpustakaan'
+  email: admin@example.com
+taxonomies:
+  - category
+  - tag
+metadata:
+  description: 'Website perpustakaan digital sekolah berbasis SLiMS — katalog online, berita, dan layanan perpustakaan.'
+summary:
+  enabled: true
+  format: short
+  size: 300
+  delimiter: '==='
+redirects: null
+routes: null
+blog:
+  route: /berita

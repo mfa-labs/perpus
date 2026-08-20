@@ -1,0 +1,13 @@
+# Plugin Form — halaman kontak
+enabled: true
+built_in_css: true
+inline_css: true
+refresh_prevention: false
+client_side_validation: true
+inline_errors: false
+files:
+  multiple: false
+  limit: 10
+  filesize: 5
+  accept:
+    - image/*

@@ -1,0 +1,15 @@
+{% set berita = page.find('/berita').children.order('date', 'desc').slice(0, 3) %}
+{% if berita|length %}
+<div class="berita-list">
+    {% for item in berita %}
+    <article class="blog-card">
+        <h3><a href="{{ item.url }}">{{ item.title }}</a></h3>
+        <p class="post-meta"><time datetime="{{ item.date|date('c') }}">{{ item.date|date('d F Y') }}</time></p>
+        <p>{{ item.summary(160)|raw }}</p>
+        <a class="read-more" href="{{ item.url }}">Baca selengkapnya →</a>
+    </article>
+    {% endfor %}
+</div>
+{% else %}
+<p>Belum ada berita. Kelola melalui panel admin Grav.</p>
+{% endif %}

@@ -1,0 +1,7 @@
+# Plugin Shortcode Core (pengganti shortcode bawaan)
+enabled: true
+blocks:
+  shortcodes:
+    enabled: true
+  shortcode:
+    enabled: true

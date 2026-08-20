@@ -3,25 +3,36 @@
 # Grav (front-end) + SLiMS 9 (OPAC) + MySQL
 #
 # Deployment di Easypanel (Compose Service):
-#   - Domain 1 (root)  -> service grav  :80   (website)
-#   - Domain 2 (subdomain) -> service slims :80 (OPAC)
+#   - Domain 1 (root)        -> service grav  :80   (website)
+#   - Domain 2 (subdomain)   -> service slims :80   (OPAC)
 #   - Tidak pakai ports (routing via domain Easypanel)
+#
+# Catatan produk:
+#   - grav & slims di-build dari source (Dockerfile masing-masing),
+#     sehingga cocok untuk pengembangan lokal & CI.
+#   - Database SLiMS di-seed otomatis oleh entrypoint slims
+#     (self-seed), tidak lagi bergantung pada preload mysql.
 # ============================================================
 
 services:
   # ---------- Front-end website (Grav CMS) ----------
   grav:
-    image: getgrav/grav:1.7
+    build:
+      context: .
+      dockerfile: grav/Dockerfile
     restart: unless-stopped
     environment:
       - GRAV_SETUP=true
       - GRAV_SCHEDULER=true
       - FIX_PERMISSIONS=true
+      # Plugin statistik membaca DB SLiMS lewat env ini
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=slims
+      - DB_PASS=${DB_PASS:?set DB_PASS in .env}
+      - DB_NAME=slims
     volumes:
       - grav_data:/var/www/html
-      # Seed akun admin Grav (hash bcrypt). Tersedia sejak first run,
-      # sehingga tidak perlu setup form di awal.
-      - ./grav/accounts/admin.yaml:/var/www/html/user/accounts/admin.yaml
 
   # ---------- OPAC (SLiMS 9) ----------
   slims:
@@ -53,9 +64,6 @@ services:
       - MYSQL_PASSWORD=${DB_PASS:?set DB_PASS in .env}
     volumes:
       - db_data:/var/lib/mysql
-      # Preload skema & data awal SLiMS (hanya saat volume db kosong / first run)
-      - ./slims/sql/senayan.sql:/docker-entrypoint-initdb.d/01-senayan.sql:ro
-      - ./slims/sql/sampledata.sql:/docker-entrypoint-initdb.d/02-sampledata.sql:ro
 
 volumes:
   grav_data:

@@ -1,0 +1,8 @@
+# Plugin SEO — meta tag otomatis
+enabled: true
+article: true
+restaurant: true
+event: true
+organization: true
+musical_work: true
+person: true

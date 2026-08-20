@@ -1,0 +1,11 @@
+# Plugin Email — dipakai form kontak (SMTP diisi admin via panel)
+enabled: true
+from: admin@example.com
+from_name: 'Perpustakaan Sekolah'
+transport:
+  type: smtp
+  server: localhost
+  port: 25
+  encryption: none
+  user: null
+  password: null

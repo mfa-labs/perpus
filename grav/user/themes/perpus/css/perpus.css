@@ -1,0 +1,193 @@
+/* ============================================================
+   Tema Perpus — Perpustakaan Digital Sekolah
+   Responsif, ringan, tanpa framework.
+   ============================================================ */
+
+:root {
+  --primary: #0f766e;
+  --primary-dark: #115e59;
+  --accent: #f59e0b;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --border: #e5e7eb;
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.6;
+}
+
+.container { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---------- Header ---------- */
+.site-header {
+  background: var(--primary);
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  box-shadow: var(--shadow);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.brand { display: flex; flex-direction: column; color: #fff; }
+.brand:hover { text-decoration: none; }
+.brand-title { font-size: 1.15rem; font-weight: 700; letter-spacing: 0.2px; }
+.brand-sub { font-size: 0.75rem; opacity: 0.85; }
+
+.site-nav ul {
+  display: flex;
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.site-nav a {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.site-nav a:hover { background: rgba(255, 255, 255, 0.15); text-decoration: none; }
+.site-nav li.active a { background: rgba(255, 255, 255, 0.22); font-weight: 600; }
+
+.nav-toggle { display: none; background: none; border: 0; color: #fff; font-size: 1.5rem; cursor: pointer; }
+
+/* ---------- Main ---------- */
+.site-main { padding: 32px 0 48px; min-height: 60vh; }
+
+.page-header { margin-bottom: 24px; border-bottom: 2px solid var(--border); padding-bottom: 12px; }
+.page-header h1 { margin: 0 0 6px; font-size: 1.9rem; color: var(--primary-dark); }
+.page-subtitle { margin: 0; color: var(--muted); }
+
+.page-body h2 { color: var(--primary-dark); margin-top: 28px; }
+.page-body img { max-width: 100%; height: auto; border-radius: var(--radius); }
+.page-body table { border-collapse: collapse; width: 100%; margin: 16px 0; }
+.page-body th, .page-body td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; }
+.page-body th { background: #f1f5f9; }
+
+blockquote { border-left: 4px solid var(--accent); margin: 16px 0; padding: 8px 16px; background: #fffbeb; border-radius: 0 6px 6px 0; }
+
+/* ---------- Beranda ---------- */
+.hero {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 40px 32px;
+  margin-bottom: 32px;
+}
+
+.hero h1 { margin-top: 0; font-size: 2rem; }
+.hero a { color: #fcd34d; }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  text-align: center;
+}
+
+.stat-number { font-size: 2rem; font-weight: 800; color: var(--primary); display: block; }
+.stat-label { color: var(--muted); font-size: 0.9rem; }
+
+/* ---------- Blog ---------- */
+.blog-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.blog-card h2 { margin: 0 0 6px; }
+.blog-card h2 a { color: var(--primary-dark); }
+.post-meta { color: var(--muted); font-size: 0.85rem; }
+.read-more { font-weight: 600; }
+
+.pagination ul { display: flex; gap: 6px; list-style: none; padding: 0; }
+.pagination a { display: inline-block; padding: 6px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); }
+.pagination a.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+/* ---------- Form kontak ---------- */
+.form { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+.form .form-field { margin-bottom: 14px; }
+.form label { display: block; font-weight: 600; margin-bottom: 4px; }
+.form input[type="text"], .form input[type="email"], .form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font: inherit;
+}
+.form button, .form input[type="submit"], .form input[type="reset"] {
+  background: var(--primary);
+  color: #fff;
+  border: 0;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font: inherit;
+  cursor: pointer;
+}
+.form button:hover, .form input[type="submit"]:hover { background: var(--primary-dark); }
+
+/* ---------- Footer ---------- */
+.site-footer {
+  background: var(--primary-dark);
+  color: #fff;
+  padding: 20px 0;
+  text-align: center;
+  font-size: 0.9rem;
+}
+.site-footer a { color: #fcd34d; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .nav-toggle { display: block; }
+  .site-nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--primary);
+    padding: 8px 16px 16px;
+  }
+  .site-nav.open { display: block; }
+  .site-nav ul { flex-direction: column; }
+  .hero { padding: 28px 20px; }
+}

@@ -1,0 +1,4 @@
+# Plugin Pagination
+enabled: true
+delta: 0
+built_in_css: true

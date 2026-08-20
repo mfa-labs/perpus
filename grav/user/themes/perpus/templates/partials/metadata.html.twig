@@ -1,0 +1,11 @@
+{% if page.header.metadata is iterable %}
+{% for name, content in page.header.metadata %}
+<meta name="{{ name }}" content="{{ content|e('html') }}" />
+{% endfor %}
+{% endif %}
+{% if page.summary %}
+<meta name="description" content="{{ page.summary(150)|e('html') }}" />
+{% endif %}
+{% if site.metadata.description and not page.summary %}
+<meta name="description" content="{{ site.metadata.description|e('html') }}" />
+{% endif %}

@@ -12,6 +12,9 @@ services:
   grav:
     ports:
       - "8080:80"   # website:  http://localhost:8080
+    environment:
+      # Di lokal, OPAC di localhost:8082 (bukan subdomain)
+      - OPAC_URL=http://localhost:8082
 
   slims:
     ports:
