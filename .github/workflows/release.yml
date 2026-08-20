@@ -7,8 +7,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  # Ganti dengan organisasi/akun GitHub Anda
-  IMAGE_BASE: ghcr.io/${{ github.repository_owner }}/perpustakaan-sekolah
+  # Image produk dipush ke GHCR org mfa-labs
+  IMAGE_BASE: ghcr.io/mfa-labs/perpustakaan-sekolah
 
 jobs:
   build-and-push:
@@ -29,11 +29,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # Metadata: tag semver (v1.0.0, 1.0, latest) untuk kedua image
       - name: Metadata image
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.IMAGE_BASE }}
+          images: |
+            ${{ env.IMAGE_BASE }}-grav
+            ${{ env.IMAGE_BASE }}-slims
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}

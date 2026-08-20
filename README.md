@@ -38,7 +38,8 @@ opac.sch.id        → slims (OPAC SLiMS)
 
 ```
 .
-├── docker-compose.yml          # grav + slims + mysql (tanpa ports)
+├── docker-compose.yml          # dev/build: grav + slims + mysql (tanpa ports)
+├── docker-compose.prod.yml     # produksi: pakai image GHCR (untuk Easypanel)
 ├── docker-compose.override.yml # port lokal (8080/8082/13306)
 ├── .env.example                # salin menjadi .env (DB_PASS)
 ├── grav/
@@ -61,20 +62,37 @@ opac.sch.id        → slims (OPAC SLiMS)
 
 ## Cara Pakai
 
-### Opsi A — Easypanel (disarankan untuk sekolah)
+### Opsi A — Easypanel memakai image GHCR (disarankan, paling cepat)
 
-1. Push repo ini ke GitHub.
-2. Di Easypanel: **New Service → Compose → Git source**, isi repository URL & branch `main`.
-3. Tambahkan environment `DB_PASS=<password kuat>` (dari `.env.example`).
+Image produk di-publish ke **GHCR** saat rilis (lihat bagian "Rilis Image").
+Deploy di Easypanel tinggal menarik image — tidak perlu build.
+
+1. **Rilis image** sekali saja (atau minta pengembang): `git tag v1.0.0 && git push origin v1.0.0` — GitHub Actions push `ghcr.io/mfa-labs/perpustakaan-sekolah-{grav,slims}:v1.0.0`.
+2. Di Easypanel: **New Service → Compose → Git source**, isi repository URL & branch `main`, **Docker Compose File: `docker-compose.prod.yml`**.
+3. Tambahkan **environment**:
+   - `DB_PASS=<password kuat>` (dipakai db, slims, grav)
+   - `OPAC_URL=https://opac.domain.sch.id` (URL subdomain OPAC)
+   - `IMAGE_GRAV=ghcr.io/mfa-labs/perpustakaan-sekolah-grav:v1.0.0` (opsional, ada default)
+   - `IMAGE_SLIMS=ghcr.io/mfa-labs/perpustakaan-sekolah-slims:v1.0.0` (opsional, ada default)
 4. **Deploy**.
 5. Tambahkan **2 domain**:
    - `perpus.sch.id` → `grav` : `80`
    - `opac.sch.id` → `slims` : `80`
 6. SSL otomatis oleh Easypanel (Let's Encrypt).
 
+> Repo ini **public**, jadi image GHCR-nya juga public — Easypanel tidak perlu kredensial tambahan.
+
+### Opsi B — Easypanel build dari git (tanpa registry)
+
+1. Push repo ini ke GitHub.
+2. Di Easypanel: **New Service → Compose → Git source**, isi repository URL & branch `main`, **Docker Compose File: `docker-compose.yml`**.
+3. Tambahkan environment `DB_PASS=<password kuat>` dan `OPAC_URL=https://opac.domain.sch.id`.
+4. **Deploy** (Easypanel akan build 2 image dari Dockerfile di repo).
+5. Tambahkan **2 domain** seperti Opsi A.
+
 Template one-click juga tersedia di `easypanel/` (lihat `easypanel/meta.yaml`).
 
-### Opsi B — PC Lokal (pengembangan/demo)
+### Opsi C — PC Lokal (pengembangan/demo)
 
 ```bash
 cp .env.example .env
@@ -142,7 +160,16 @@ docker run --rm -v <project>_grav_data:/data -v "$PWD":/backup alpine sh -c 'cd 
 ## Pengembangan & Release
 
 - **Build lokal**: `docker compose build` (atau `docker compose up -d --build`).
-- **Release image**: buat tag `git tag v1.0.0 && git push origin v1.0.0` → GitHub Actions build & push `ghcr.io/<org>/perpustakaan-sekolah-grav` dan `-slims` ke GHCR.
+- **Rilis image (push ke GHCR)**:
+  ```bash
+  git tag v1.0.0
+  git push origin v1.0.0
+  ```
+  GitHub Actions (`release.yml`) akan build & push:
+  - `ghcr.io/mfa-labs/perpustakaan-sekolah-grav:v1.0.0`
+  - `ghcr.io/mfa-labs/perpustakaan-sekolah-slims:v1.0.0`
+
+  Setelah push, pakai image tersebut di Easypanel (Opsi A) atau update `docker-compose.prod.yml`.
 
 ## Dokumen Terkait
 

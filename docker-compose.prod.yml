@@ -1,0 +1,64 @@
+# ============================================================
+# Compose PRODUKSI — Perpustakaan Digital Sekolah
+# Dipakai di Easypanel: memakai image statis dari GHCR
+# (tidak build dari git — lebih cepat & stabil).
+#
+# Persiapkan dulu: buat tag vX.Y.Z di git agar release.yml
+# push image ke ghcr.io/mfa-labs/perpustakaan-sekolah-{grav,slims}
+# lalu ganti nilai IMAGE_GRAV / IMAGE_SLIMS di environment
+# Easypanel (nilai default di bawah adalah contoh).
+# ============================================================
+
+services:
+  # ---------- Front-end website (Grav CMS) ----------
+  grav:
+    image: ${IMAGE_GRAV:-ghcr.io/mfa-labs/perpustakaan-sekolah-grav:v1.0.0}
+    restart: unless-stopped
+    environment:
+      - GRAV_SETUP=true
+      - GRAV_SCHEDULER=true
+      - FIX_PERMISSIONS=true
+      # Plugin statistik membaca DB SLiMS lewat env ini
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=slims
+      - DB_PASS=${DB_PASS:?set DB_PASS in Easypanel env}
+      - DB_NAME=slims
+      # URL OPAC untuk link "Katalog" (mis. https://opac.domain.sch.id)
+      - OPAC_URL=${OPAC_URL:?set OPAC_URL in Easypanel env}
+    volumes:
+      - grav_data:/var/www/html
+
+  # ---------- OPAC (SLiMS 9) ----------
+  slims:
+    image: ${IMAGE_SLIMS:-ghcr.io/mfa-labs/perpustakaan-sekolah-slims:v1.0.0}
+    restart: unless-stopped
+    environment:
+      - ENV=production
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=slims
+      - DB_PASS=${DB_PASS:?set DB_PASS in Easypanel env}
+      - DB_NAME=slims
+    volumes:
+      - slims_data:/var/www/html
+    depends_on:
+      - db
+
+  # ---------- Database SLiMS ----------
+  db:
+    image: mysql:5.7
+    restart: unless-stopped
+    command: --sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION --max_allowed_packet=1024M
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASS:?set DB_PASS in Easypanel env}
+      - MYSQL_DATABASE=slims
+      - MYSQL_USER=slims
+      - MYSQL_PASSWORD=${DB_PASS:?set DB_PASS in Easypanel env}
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  grav_data:
+  slims_data:
+  db_data:
