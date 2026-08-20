@@ -12,7 +12,7 @@
 services:
   # ---------- Front-end website (Grav CMS) ----------
   grav:
-    image: ${IMAGE_GRAV:-ghcr.io/mfa-labs/perpustakaan-sekolah-grav:v1.0.0}
+    image: ${IMAGE_GRAV:-ghcr.io/mfa-labs/perpustakaan-sekolah-grav:v1.0.1}
     restart: unless-stopped
     environment:
       - GRAV_SETUP=true
@@ -31,7 +31,7 @@ services:
 
   # ---------- OPAC (SLiMS 9) ----------
   slims:
-    image: ${IMAGE_SLIMS:-ghcr.io/mfa-labs/perpustakaan-sekolah-slims:v1.0.0}
+    image: ${IMAGE_SLIMS:-ghcr.io/mfa-labs/perpustakaan-sekolah-slims:v1.0.1}
     restart: unless-stopped
     environment:
       - ENV=production

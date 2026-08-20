@@ -67,13 +67,13 @@ opac.sch.id        → slims (OPAC SLiMS)
 Image produk di-publish ke **GHCR** saat rilis (lihat bagian "Rilis Image").
 Deploy di Easypanel tinggal menarik image — tidak perlu build.
 
-1. **Rilis image** sekali saja (atau minta pengembang): `git tag v1.0.0 && git push origin v1.0.0` — GitHub Actions push `ghcr.io/mfa-labs/perpustakaan-sekolah-{grav,slims}:v1.0.0`.
+1. **Rilis image** sekali saja (atau minta pengembang): `git tag v1.0.1 && git push origin v1.0.1` — GitHub Actions push `ghcr.io/mfa-labs/perpustakaan-sekolah-{grav,slims}:v1.0.1`.
 2. Di Easypanel: **New Service → Compose → Git source**, isi repository URL & branch `main`, **Docker Compose File: `docker-compose.prod.yml`**.
 3. Tambahkan **environment**:
    - `DB_PASS=<password kuat>` (dipakai db, slims, grav)
    - `OPAC_URL=https://opac.domain.sch.id` (URL subdomain OPAC)
-   - `IMAGE_GRAV=ghcr.io/mfa-labs/perpustakaan-sekolah-grav:v1.0.0` (opsional, ada default)
-   - `IMAGE_SLIMS=ghcr.io/mfa-labs/perpustakaan-sekolah-slims:v1.0.0` (opsional, ada default)
+   - `IMAGE_GRAV=ghcr.io/mfa-labs/perpustakaan-sekolah-grav:v1.0.1` (opsional, ada default)
+   - `IMAGE_SLIMS=ghcr.io/mfa-labs/perpustakaan-sekolah-slims:v1.0.1` (opsional, ada default)
 4. **Deploy**.
 5. Tambahkan **2 domain**:
    - `perpus.sch.id` → `grav` : `80`
@@ -162,12 +162,12 @@ docker run --rm -v <project>_grav_data:/data -v "$PWD":/backup alpine sh -c 'cd 
 - **Build lokal**: `docker compose build` (atau `docker compose up -d --build`).
 - **Rilis image (push ke GHCR)**:
   ```bash
-  git tag v1.0.0
-  git push origin v1.0.0
+  git tag v1.0.1
+  git push origin v1.0.1
   ```
   GitHub Actions (`release.yml`) akan build & push:
-  - `ghcr.io/mfa-labs/perpustakaan-sekolah-grav:v1.0.0`
-  - `ghcr.io/mfa-labs/perpustakaan-sekolah-slims:v1.0.0`
+  - `ghcr.io/mfa-labs/perpustakaan-sekolah-grav:v1.0.1`
+  - `ghcr.io/mfa-labs/perpustakaan-sekolah-slims:v1.0.1`
 
   Setelah push, pakai image tersebut di Easypanel (Opsi A) atau update `docker-compose.prod.yml`.
 
